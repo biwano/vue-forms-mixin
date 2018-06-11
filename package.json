@@ -1,0 +1,23 @@
+{
+  "name": "vue-forms-mixin",
+  "version": "0.1.0",
+  "description": "A helper package for VueJS 2 to manage forms validation and messages",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/biwano/vue-forms-mixin.git"
+  },
+  "keywords": [
+    "vuejs",
+    "forms"
+  ],
+  "author": "Bruno Ilponse",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/biwano/vue-forms-mixin/issues"
+  },
+  "homepage": "https://github.com/biwano/vue-forms-mixin#readme"
+}
