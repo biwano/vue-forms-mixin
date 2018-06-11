@@ -1,23 +1,48 @@
 {
-  "name": "vue-forms-mixin",
-  "version": "0.1.0",
+  "_from": "file:/home/biwano/code/vue-forms-mixin/vue-forms-mixin-0.1.0.tgz",
+  "_id": "vue-forms-mixin@0.1.0",
+  "_inBundle": false,
+  "_integrity": "sha512-hFaFoOB+k+bdlOqMWdlDuOuvPGOA1TpVcoouzgINz+ZE9WcxIP6PDzJtF3+BuepMR8Adt67Wmelk6lXfNHSLBA==",
+  "_location": "/vue-forms-mixin",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "file",
+    "where": "/home/biwano/code/bluejong/client",
+    "raw": "/home/biwano/code/vue-forms-mixin/vue-forms-mixin-0.1.0.tgz",
+    "rawSpec": "/home/biwano/code/vue-forms-mixin/vue-forms-mixin-0.1.0.tgz",
+    "saveSpec": "file:/home/biwano/code/vue-forms-mixin/vue-forms-mixin-0.1.0.tgz",
+    "fetchSpec": "/home/biwano/code/vue-forms-mixin/vue-forms-mixin-0.1.0.tgz"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "/home/biwano/code/vue-forms-mixin/vue-forms-mixin-0.1.0.tgz",
+  "_shasum": "8f850fd25f82ed9298322139e3ef010d1c3ca83d",
+  "_spec": "/home/biwano/code/vue-forms-mixin/vue-forms-mixin-0.1.0.tgz",
+  "_where": "/home/biwano/code/bluejong/client",
+  "author": {
+    "name": "Bruno Ilponse"
+  },
+  "bugs": {
+    "url": "https://github.com/biwano/vue-forms-mixin/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
   "description": "A helper package for VueJS 2 to manage forms validation and messages",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/biwano/vue-forms-mixin.git"
-  },
+  "homepage": "https://github.com/biwano/vue-forms-mixin#readme",
   "keywords": [
     "vuejs",
     "forms"
   ],
-  "author": "Bruno Ilponse",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/biwano/vue-forms-mixin/issues"
+  "main": "index.js",
+  "name": "vue-forms-mixin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/biwano/vue-forms-mixin.git"
   },
-  "homepage": "https://github.com/biwano/vue-forms-mixin#readme"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.1.0"
 }
