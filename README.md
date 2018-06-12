@@ -17,7 +17,7 @@ import FormMixinMaker from 'vue-forms-mixin';
 
 ## Configure
 
-You basically create the form mixin by calling the FormMixinMaker with configuration parameters
+You basically create the form mixin by calling the FormMixinMaker with configuration parameters:
 
 ```javascript
 const formMixin = FormMixinMaker({
@@ -31,14 +31,14 @@ const formMixin = FormMixinMaker({
 
 ### Overriding classes
 
-You surely have to do override this to use for instance some ui-kit or bootstrap classes
+You surely have to do override this to use for instance some ui-kit or bootstrap classes:
 * classSuccess: class to be appended to input if value is valid
 * classError: class to be appended to input if value is invalid
 
 ### Overriding error messages
 
-* xxxMessage: message to append to validation status in case of error for validation method 'xxx'
-xxx is the name of the validation method whose error message you want to override
+xxxMessage: message to append to validation status in case of error for validation method 'xxx'
+xxx is the name of the validation method whose error message you want to override.
 
 ### Overriding data attributes
 
@@ -68,8 +68,6 @@ The data-validation-reference attribute is used to bind result to a reference, t
 </template>
 <script>
 import FormMixin from '@/framework/mixins/formMixin';
-import roundModels from '@/business/roundModels';
-import PlayerChooser from '@/components/player/playerChooser';
 
 export default {
   name: 'Profile',
@@ -85,11 +83,11 @@ The mixin will generate a computed property called **validation** whose attribut
 
 * **valid**: boolean indicating whether all inputs of the form are valid
 * **inputs**: an array of validation information (one element per input). The validation information contains the following attributes:
-** **model**: the model being tested
-** **method**: the validation method
-** **params**: the parameters passed to the validation method
-** **valid**: boolean indicating whether the input is valid or not
-** **error**: the error message pertaining to the validation method
+ * **model**: the model being tested
+ * **method**: the validation method
+ * **params**: the parameters passed to the validation method
+ * **valid**: boolean indicating whether the input is valid or not
+ * **error**: the error message pertaining to the validation method
 
 Use this property however you like to do whatever you please.
 
