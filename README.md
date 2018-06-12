@@ -83,11 +83,11 @@ The mixin will generate a computed property called **validation** whose attribut
 
 * **valid**: boolean indicating whether all inputs of the form are valid
 * **inputs**: an array of validation information (one element per input). The validation information contains the following attributes:
- * **model**: the model being tested
- * **method**: the validation method
- * **params**: the parameters passed to the validation method
- * **valid**: boolean indicating whether the input is valid or not
- * **error**: the error message pertaining to the validation method
+  * **model**: the model being tested
+  * **method**: the validation method
+  * **params**: the parameters passed to the validation method
+  * **valid**: boolean indicating whether the input is valid or not
+  * **error**: the error message pertaining to the validation method
 
 Use this property however you like to do whatever you please.
 
@@ -95,4 +95,4 @@ Use this property however you like to do whatever you please.
 
 ### Can I add my own validation functions
 Yes, just drop the validation functions in your component either directly or using your own mixin
-You can also add error messages for your custom functions using the config file
+You can also add error messages for your custom functions using the config file.
