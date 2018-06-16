@@ -1,3 +1,3 @@
-import FormMixinMaker from './formMixinMaker';
+import FormMixinMaker from './src/formMixinMaker';
 
 export default FormMixinMaker;
