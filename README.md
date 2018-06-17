@@ -91,6 +91,16 @@ The mixin will generate a computed property called **validation** whose attribut
 
 Use this property however you like to do whatever you please.
 
+## Existing validation methods:
+
+* validateEmail(email): Validates email is an email 
+* validateMinChars(text, minChars): Validates that text at least minChars characters 
+* validateRequired(text): Validates that text has at least one char
+* validateGreaterThan(number, min): Validates than number is greater than min
+* validatePositive(number): Validates that number is greater then zéro
+* validateMultipleOf(number, mod): validates than number is a multiple of mod
+* validateEqual(text1, text2): Validates than text1 equals text2
+
 ## FAQ
 
 ### Can I add my own validation functions

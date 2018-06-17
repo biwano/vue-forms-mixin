@@ -1,25 +1,9 @@
+import defaultConfig from './defaultConfig.js';
+
 // Builds a formMixin given a configuration
 const maker = function maker(config_) {
-  // Default config
-  const config = {
-    // Class to be appended to input if value is valid
-    classSuccess: 'success',
-    // Class to be appended to input if value is valid
-    classError: 'error',
-    // Prefix for validation definition (data-validation-definition="[definition]")
-    validationDefinitionPrefix: 'validationDefinition',
-    // Prefix for validation reference (data-validation-reference="[reference]")
-    validationReferencePrefix: 'validationReference',
-    // Prefix for validation error message (data-validation-error="[error]")
-    validationErrorPrefix: 'validationError',
-    // Message to append to validation status in case of error for validation method 'xxx'
-    validateRequiredMessage: 'This field is required',
-    validatePositiveMessage: 'This field must be positive',
-    validateMultipleOfMessage: 'This field must be a multiple of... a certain number',
-    validateEqualMessage: 'This field must be equal to... that another field',
-  };
   // Overiding default config
-  Object.assign(config, config_);
+  const config = Object.assign({}, defaultConfig, config_);
 
   return {
     data() {
@@ -172,35 +156,35 @@ const maker = function maker(config_) {
         }
         return validationInput;
       },
+      getValidationError(reference) {
+        const input = this.validationStatus.inputs[reference];
+        return input !== undefined ? input.error : '';
+      },
       // Built-in validation functions
-      validateEmail(email) {
+      validateEmail(email, params) {
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email);
       },
-      validateMinChars(text, minChars_) {
-        let minChars = minChars_;
+      validateMinChars(text, params) {
+        let minChars = params[0];
         if (minChars === undefined) minChars = 1;
         const valueOk = text !== undefined && text.length >= minChars;
         return valueOk;
       },
-      validateRequired(text) {
-        return this.validateMinChars(text, 1);
+      validateRequired(text, params) {
+        return this.validateMinChars(text, [1]);
       },
       validateGreaterThan(number, params) {
         return number !== undefined && number > params[0];
       },
-      validatePositive(number) {
+      validatePositive(number, params) {
         return this.validateGreaterThan(number, [0]);
       },
-      validateMultipleOf(number, mod, returnBoolean) {
-        return this.formClassReturn_(number % mod === 0, returnBoolean);
+      validateMultipleOf(number, params) {
+        return number % params[0] === 0;
       },
-      validateEqual(text1, text2, returnBoolean) {
-        return this.formClassReturn_(text1 === text2, returnBoolean);
-      },
-      getValidationError(reference) {
-        const input = this.validationStatus.inputs[reference];
-        return input !== undefined ? input.error : '';
+      validateEqual(text, params) {
+        return text === params[0];
       },
     },
     computed: {
