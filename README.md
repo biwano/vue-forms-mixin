@@ -2,7 +2,7 @@
 
 ## What it does
 
-vue-form-mixin is a simple mixin for vuejs 2 doing some boilerplate job to handle form validation and error messages.
+vue-form-mixin is a simple mixin for vuejs 2 that helps handling form validation and error messages.
 
 ## Install
 
@@ -31,7 +31,7 @@ const formMixin = FormMixinMaker({
 
 ### Overriding classes
 
-You surely have to do override this to use for instance some ui-kit or bootstrap classes:
+You surely have to override add your error and success classes to your inputs:
 * classSuccess: class to be appended to input if value is valid
 * classError: class to be appended to input if value is invalid
 
@@ -47,7 +47,6 @@ You should not have to do this... but maybe you like shorter syntaxes...
 * validationReferencePrefix: prefix for validation reference (data-validation-reference="[reference]")
 
 
-
 ## Basic Use
 
 * Add the mixin you created to the mixins list of any component
@@ -57,6 +56,8 @@ You should not have to do this... but maybe you like shorter syntaxes...
 The mixin will bind validation to any html element with a data-validation-definition attribute.
 The syntax is `validationMethod(model, param1, param2, param3)`.
 The data-validation-reference attribute is used to bind result to a reference, this reference can be used afterwards to access validation attributes in the validation object (see below) or when using the getValidationError method.
+
+Exemple:
 
 ```javascript
 <template>
@@ -68,6 +69,9 @@ The data-validation-reference attribute is used to bind result to a reference, t
 </template>
 <script>
 import FormMixin from '@/framework/mixins/formMixin';
+const formMixin = FormMixinMaker({
+/* Your config goes there */
+});
 
 export default {
   name: 'Profile',
@@ -93,16 +97,16 @@ Use this property however you like to do whatever you please.
 
 ## Existing validation methods:
 
-* validateEmail(email): Validates email is an email 
-* validateMinChars(text, minChars): Validates that text at least minChars characters 
-* validateRequired(text): Validates that text has at least one char
-* validateGreaterThan(number, min): Validates than number is greater than min
-* validatePositive(number): Validates that number is greater then zéro
-* validateMultipleOf(number, mod): validates than number is a multiple of mod
-* validateEqual(text1, text2): Validates than text1 equals text2
+* validateEmail(email): Validates 'email' is an email address 
+* validateMinChars(text, minChars): Validates that 'text' has at least 'minChars' characters 
+* validateRequired(text): Validates that 'text' has at least one char
+* validateGreaterThan(number, min): Validates that 'number' is greater than 'min'
+* validatePositive(number): Validates that 'number' is greater then zero
+* validateMultipleOf(number, mod): validates than 'number' is a multiple of 'mod'
+* validateEqual(text1, text2): Validates that 'text1' equals 'text2'
 
 ## FAQ
 
 ### Can I add my own validation functions
-Yes, just drop the validation functions in your component either directly or using your own mixin
-You can also add error messages for your custom functions using the config file.
+Yes, just drop the validation functions in your component either directly or using your own mixin. Please note that your function signature must be `function validateCustom(model, params)``` where params will be an array containing the arguments passed in the validationDefinition attribute. 
+You can also add error messages for your custom functions using the configuration object.
