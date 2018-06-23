@@ -29,6 +29,41 @@ const maker = function maker(config_) {
       $mountValidation() {
         this.$mountElementValidation(this.$el);
       },
+      // Adds this. to everything that looks like a variable
+      // TODO: find a better way
+      $compileExpression(expression) {
+        const regExVariable = /^[A-Za-z_][\w_\.]*/;
+        const regExSpace = /^\s+'/;
+        const regExQuote1 = /^'[^']+'/;
+        const regExQuote2 = /^"[^"]+"/;
+        let compiled = '';
+        const dependencies = [];
+        let i = 0;
+        while (i < expression.length) {
+          const rest = expression.substring(i);
+          function eat(regExp, isDependent) {
+            const found = rest.match(regExp);
+            if (found != null) {
+              const foundVal = found[0];
+              const prefix = isDependent ? 'this.' : '';
+              if (isDependent) {
+                dependencies.push(foundVal);
+              }
+              compiled = `${compiled}${prefix}${foundVal}`;
+              i += found.length;
+              return true;
+            }
+            return false;
+          }
+          if (eat(regExVariable, true)) break;
+          if (eat(regExSpace, false)) break;
+          if (eat(regExQuote1, false)) break;
+          if (eat(regExQuote2, false)) break;
+          compiled = `${compiled}${rest[0]}`;
+          i += 1;
+        }
+        return { compiled, dependencies };
+      },
       // Computes the validation line of an input
       $getValidationLine(data) {
         const regEx = /(.*)\(([^,]*)(?:\s?,\s?)?([^,]*)(?:\s?,\s?)?([^,]*)(?:\s?,\s?)?([^,]*).*\)/;
@@ -36,7 +71,9 @@ const maker = function maker(config_) {
         if (match != null) {
           const method = match[1];
           const model = match[2];
+          const modelCompiled = this.$compileExpression(model).compiled;
           const params = [];
+          let dependencies = [];
           const valid = true;
           const error = undefined;
           let customErrorMessage;
@@ -45,15 +82,22 @@ const maker = function maker(config_) {
             if (match[i].includes('=')) {
               const split = match[i].split('=');
               const key = split[0];
-              const value = split[1];
+              const compiledObject = this.$compileExpression(split[1]);
+              const value = compiledObject.compiled;
+              dependencies = dependencies.concat(compiledObject.dependencies);
+              // Error parameter
               if (key == 'error') customErrorMessage = value;
+              // Unknown special parameter
               else console.warn(`Data validation special parameter '${key}' cannot be parsed in '${data}'`);
+            // Normal parameter
             } else {
-              params.push(match[i]);
+              const compiledObject = this.$compileExpression(match[i]);
+              params.push(compiledObject.compiled);
+              dependencies = dependencies.concat(compiledObject.dependencies);
             }
           }
           return {
-            model, method, params, valid, error, customErrorMessage,
+            model, modelCompiled, dependencies, method, params, valid, error, customErrorMessage,
           };
         }
         console.warn(`Data validation line cannot be parsed: ${data}`);
@@ -80,7 +124,7 @@ const maker = function maker(config_) {
           // eslint-disable-next-line
           params_.push(eval(line.params[i]))
         }
-        const value = eval(`this.${line.model}`);
+        const value = eval(line.modelCompiled);
         // Setting valid and error values for line
         const valid = this[line.method](value, params_);
         let error;
@@ -148,10 +192,17 @@ const maker = function maker(config_) {
           this.$validateInput(validationInput);
           // Validation for each model bound to this input
           for (let i = 0; i < lines.length; i += 1) {
-            this.$watch(lines[i].model, () => {
+            const line = lines[i];
+            this.$watch(line.model, () => {
               this.$validateInput(validationInput);
               this.validationInputs = Object.assign({}, this.validationInputs);
             });
+            for (let j = 0; j < line.dependencies.length; j += 1) {
+              this.$watch(line.dependencies[j], () => {
+                this.$validateInput(validationInput);
+                this.validationInputs = Object.assign({}, this.validationInputs);
+              });
+            }
           }
         }
         return validationInput;

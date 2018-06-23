@@ -57,6 +57,8 @@ The mixin will bind validation to any html element with a data-validation-defini
 The syntax is `validationMethod(model, param1, param2, param3)`.
 The data-validation-reference attribute is used to bind result to a reference, this reference can be used afterwards to access validation attributes in the validation object (see below) or when using the getValidationError method.
 
+Check the [test component](https://github.com/biwano/vue-forms-mixin/blob/master/test/form.js) for a complete example. Or see below for a quickie.
+
 Exemple:
 
 ```javascript
@@ -87,11 +89,12 @@ The mixin will generate a computed property called **validation** whose attribut
 
 * **valid**: boolean indicating whether all inputs of the form are valid
 * **inputs**: an array of validation information (one element per input). The validation information contains the following attributes:
-  * **model**: the model being tested
-  * **method**: the validation method
-  * **params**: the parameters passed to the validation method
   * **valid**: boolean indicating whether the input is valid or not
   * **error**: the error message pertaining to the validation method
+  * **model**: the model being tested
+  * **method**: the validation method
+  * **params**: the compiled parameters passed to the validation method
+  * **modelCompiled**: the compiled version of the model being tested
 
 Use this property however you like to do whatever you please.
 
@@ -108,5 +111,8 @@ Use this property however you like to do whatever you please.
 ## FAQ
 
 ### Can I add my own validation functions
-Yes, just drop the validation functions in your component either directly or using your own mixin. Please note that your function signature must be `function validateCustom(model, params)``` where params will be an array containing the arguments passed in the validationDefinition attribute. 
+Yes, just drop the validation functions in your component either directly or using your own mixin. Please note that your function signature must be `function validateCustom(model, params)` where params will be an array containing the arguments passed in the validationDefinition attribute. 
 You can also add error messages for your custom functions using the configuration object.
+
+### What happens if I modify a value used as a parameter to a validation method
+The mixin tracks dependencies, so it should magically work anyways... It should...
