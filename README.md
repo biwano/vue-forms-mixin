@@ -54,8 +54,9 @@ You should not have to do this... but maybe you like shorter syntaxes...
 * use getValidationError(reference) to display error messages
 
 The mixin will bind validation to any html element with a data-validation-definition attribute.
-The syntax is `validationMethod(model, param1, param2, param3)`.
+The syntax is `validationMethod(param1, param2, param3)`.
 The data-validation-reference attribute is used to bind result to a reference, this reference can be used afterwards to access validation attributes in the validation object (see below) or when using the getValidationError method.
+By default the reference is the first dependency detected.
 
 Check the [test component](https://github.com/biwano/vue-forms-mixin/blob/master/test/form.js) for a complete example. Or see below for a quickie.
 
@@ -91,10 +92,8 @@ The mixin will generate a computed property called **validation** whose attribut
 * **inputs**: an array of validation information (one element per input). The validation information contains the following attributes:
   * **valid**: boolean indicating whether the input is valid or not
   * **error**: the error message pertaining to the validation method
-  * **model**: the model being tested
   * **method**: the validation method
   * **params**: the compiled parameters passed to the validation method
-  * **modelCompiled**: the compiled version of the model being tested
 
 Use this property however you like to do whatever you please.
 
@@ -116,3 +115,6 @@ You can also add error messages for your custom functions using the configuratio
 
 ### What happens if I modify a value used as a parameter to a validation method
 The mixin tracks dependencies, so it should magically work anyways... It should...
+
+### Is there anyway to know if the form or attributes are dirty/pristine and prevent pristine inputs to have error/success classes binded to them?
+I am thinking to do it. Lemme know if you would like to have it implemented

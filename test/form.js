@@ -64,16 +64,16 @@ const FormComponent = Vue.component('form-component', {
   </div>
   `,
   data() {
-  	return {
-  		required_success: 'I am required',
-  		required: '',
-  		positive: -5,
-  		custom: 'toto',
-  		equal: 'nottoto',
-  		min_chars_8: 'not8cha',
-  		multiple_of_5: 6,
-  		embedded: { email: 'notanemail@address' },
-  	};
+    return {
+      required_success: 'I am required',
+      required: '',
+      positive: -5,
+      custom: 200,
+      equal: 'nottoto',
+      min_chars_8: 'not8cha',
+      multiple_of_5: 6,
+      embedded: { email: 'notanemail@address' },
+    };
   },
   methods: {
     validateCustom(number) {

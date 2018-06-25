@@ -70,14 +70,12 @@ const maker = function maker(config_) {
         const match = regEx.exec(data);
         if (match != null) {
           const method = match[1];
-          const model = match[2];
-          const modelCompiled = this.$compileExpression(model).compiled;
           const params = [];
           let dependencies = [];
           const valid = true;
           const error = undefined;
           let customErrorMessage;
-          for (let i = 3; i < match.length; i += 1) {
+          for (let i = 2; i < match.length; i += 1) {
             // Spécial parameter
             if (match[i].includes('=')) {
               const split = match[i].split('=');
@@ -86,7 +84,7 @@ const maker = function maker(config_) {
               const value = compiledObject.compiled;
               dependencies = dependencies.concat(compiledObject.dependencies);
               // Error parameter
-              if (key == 'error') customErrorMessage = value;
+              if (key === 'error') customErrorMessage = value;
               // Unknown special parameter
               else console.warn(`Data validation special parameter '${key}' cannot be parsed in '${data}'`);
             // Normal parameter
@@ -97,7 +95,7 @@ const maker = function maker(config_) {
             }
           }
           return {
-            model, modelCompiled, dependencies, method, params, valid, error, customErrorMessage,
+            dependencies, method, params, valid, error, customErrorMessage,
           };
         }
         console.warn(`Data validation line cannot be parsed: ${data}`);
@@ -124,9 +122,8 @@ const maker = function maker(config_) {
           // eslint-disable-next-line
           params_.push(eval(line.params[i]))
         }
-        const value = eval(line.modelCompiled);
         // Setting valid and error values for line
-        const valid = this[line.method](value, params_);
+        const valid = this[line.method](...params_);
         let error;
         if (!valid) {
           if (line.customErrorMessage === undefined) error = config[`${line.method}Message`];
@@ -138,7 +135,7 @@ const maker = function maker(config_) {
       // Computes the validation status of validation lines of an input
       $validateLines(lines) {
         let valid = true;
-        // Validate each line against model computed in real time
+        // Validate each lines
         for (let i = 0; i < lines.length; i += 1) {
           const line = lines[i];
           // eslint-disable-next-line
@@ -148,7 +145,8 @@ const maker = function maker(config_) {
         return valid;
       },
       // Computes the validation status of an input
-      $validateInput(validationInput) {
+      $validateInput(validationInput_) {
+        const validationInput = validationInput_;
         const valid = this.$validateLines(validationInput.lines);
         let error;
         // Sets up class on input element
@@ -158,10 +156,8 @@ const maker = function maker(config_) {
         } else {
           validationInput.input.classList.remove(config.classSuccess);
           validationInput.input.classList.add(config.classError);
-
-          if (!valid)
+          if (!valid) {
           // Sets Override error message if available
-          {
             if (validationInput.customErrorMessage !== undefined) {
               error = validationInput.customErrorMessage;
             } else {
@@ -184,19 +180,17 @@ const maker = function maker(config_) {
         if (lines.length > 0) {
           let reference = input.dataset[config.validationReferencePrefix];
           const customErrorMessage = input.dataset[config.validationErrorPrefix];
-          if (reference === undefined) reference = lines[0].model;
+          if (reference === undefined &&
+            lines.length > 0 &&
+            lines[0].dependencies.length > 0) [reference] = lines[0].dependencies;
           validationInput = {
             reference, input, lines, customErrorMessage,
           };
           // Initial validation
           this.$validateInput(validationInput);
-          // Validation for each model bound to this input
+          // Bind Validation for each dependency found for this input
           for (let i = 0; i < lines.length; i += 1) {
             const line = lines[i];
-            this.$watch(line.model, () => {
-              this.$validateInput(validationInput);
-              this.validationInputs = Object.assign({}, this.validationInputs);
-            });
             for (let j = 0; j < line.dependencies.length; j += 1) {
               this.$watch(line.dependencies[j], () => {
                 this.$validateInput(validationInput);
@@ -212,30 +206,30 @@ const maker = function maker(config_) {
         return input !== undefined ? input.error : '';
       },
       // Built-in validation functions
-      validateEmail(email, params) {
+      validateEmail(email) {
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email);
       },
-      validateMinChars(text, params) {
-        let minChars = params[0];
+      validateMinChars(text, minChars_) {
+        let minChars = minChars_;
         if (minChars === undefined) minChars = 1;
         const valueOk = text !== undefined && text.length >= minChars;
         return valueOk;
       },
-      validateRequired(text, params) {
+      validateRequired(text) {
         return this.validateMinChars(text, [1]);
       },
-      validateGreaterThan(number, params) {
-        return number !== undefined && number > params[0];
+      validateGreaterThan(number, target) {
+        return number !== undefined && number > target;
       },
-      validatePositive(number, params) {
+      validatePositive(number) {
         return this.validateGreaterThan(number, [0]);
       },
-      validateMultipleOf(number, params) {
-        return number % params[0] === 0;
+      validateMultipleOf(number, mod) {
+        return number % mod === 0;
       },
-      validateEqual(text, params) {
-        return text === params[0];
+      validateEqual(text, otherText) {
+        return text === otherText;
       },
     },
     computed: {
@@ -246,8 +240,9 @@ const maker = function maker(config_) {
           inputs: this.validationInputs,
         };
         if (this.validationInputs !== undefined) {
-          for (const i in validation.inputs) {
-            if (!validation.inputs[i].valid) {
+          const keys = Object.keys(validation.inputs);
+          for (let i = 0; i < keys.length; i += 1) {
+            if (!validation.inputs[keys[i]].valid) {
               validation.valid = false;
               break;
             }
