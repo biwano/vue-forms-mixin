@@ -183,6 +183,10 @@ const maker = function maker(config_) {
           if (reference === undefined &&
             lines.length > 0 &&
             lines[0].dependencies.length > 0) [reference] = lines[0].dependencies;
+          else {
+            console.warn('Unbound validation definition detected');
+            reference = 'noop';
+          }
           validationInput = {
             reference, input, lines, customErrorMessage,
           };
@@ -216,14 +220,15 @@ const maker = function maker(config_) {
         const valueOk = text !== undefined && text.length >= minChars;
         return valueOk;
       },
-      validateRequired(text) {
-        return this.validateMinChars(text, [1]);
+      validateRequired(value) {
+        return value !== undefined && ((value.length !== undefined && value.length > 0) ||
+          value.length === undefined);
       },
       validateGreaterThan(number, target) {
         return number !== undefined && number > target;
       },
       validatePositive(number) {
-        return this.validateGreaterThan(number, [0]);
+        return this.validateGreaterThan(number, 0);
       },
       validateMultipleOf(number, mod) {
         return number % mod === 0;
