@@ -21,8 +21,10 @@ const maker = function maker(config_) {
         if (res !== undefined) {
           this.$set(this.validationInputs, res.reference, res);
         }
-        for (let i = 0; i < element.children.length; i += 1) {
-          this.$mountElementValidation(element.children[i]);
+        if (element.children !== undefined) {
+          for (let i = 0; i < element.children.length; i += 1) {
+            this.$mountElementValidation(element.children[i]);
+          }
         }
       },
       // Mount the validation of all elements recursively
@@ -103,13 +105,15 @@ const maker = function maker(config_) {
       },
       // Get the validation lines of an input
       $getValidationLines(input) {
-        const keys = Object.keys(input.dataset);
         const lines = [];
-        for (let i = 0; i < keys.length; i += 1) {
-          const key = keys[i];
-          if (key.startsWith(config.validationDefinitionPrefix)) {
-            const line = this.$getValidationLine(input.dataset[key]);
-            if (line !== undefined) lines.push(line);
+        if (input.dataset !== undefined) {
+          const keys = Object.keys(input.dataset);
+          for (let i = 0; i < keys.length; i += 1) {
+            const key = keys[i];
+            if (key.startsWith(config.validationDefinitionPrefix)) {
+              const line = this.$getValidationLine(input.dataset[key]);
+              if (line !== undefined) lines.push(line);
+            }
           }
         }
         return lines;
@@ -183,10 +187,6 @@ const maker = function maker(config_) {
           if (reference === undefined &&
             lines.length > 0 &&
             lines[0].dependencies.length > 0) [reference] = lines[0].dependencies;
-          else {
-            console.warn('Unbound validation definition detected');
-            reference = 'noop';
-          }
           validationInput = {
             reference, input, lines, customErrorMessage,
           };
@@ -228,7 +228,7 @@ const maker = function maker(config_) {
         return number !== undefined && number > target;
       },
       validatePositive(number) {
-        return this.validateGreaterThan(number, 0);
+        return this.validateGreaterThan(number, [0]);
       },
       validateMultipleOf(number, mod) {
         return number % mod === 0;
